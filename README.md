@@ -1,1 +1,1 @@
-### Basic portfolio page. (only front end)
+### Basic portfolio page.
