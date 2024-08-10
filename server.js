@@ -1,8 +1,9 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
+const querystring = require('querystring');
 
-// Define the MIME types for different file extensions
 const mimeTypes = {
     '.html': 'text/html',
     '.css': 'text/css',
@@ -19,37 +20,88 @@ const mimeTypes = {
     '.eot': 'application/vnd.ms-fontobject',
 };
 
-// Create the server
-const server = http.createServer((req, res) => {
-    // Set the file path to the requested URL, or default to 'index.html' if root is requested
-    let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
+const server = http.createServer((req, res) => 
+    {
+    if (req.method === 'POST' && req.url === '/send') 
+        {
+        let body = '';
+        req.on('data', chunk => 
+        {
+            body += chunk.toString();
+        });
 
-    // Get the file extension
-    const extname = String(path.extname(filePath)).toLowerCase();
+        req.on('end', () => 
+            {
+            const parsedBody = querystring.parse(body);
+            const { name, email, message } = parsedBody;
 
-    // Get the corresponding MIME type or default to 'application/octet-stream'
-    const contentType = mimeTypes[extname] || 'application/octet-stream';
+            // Nodemailer configuration
+            let transporter = nodemailer.createTransport(
+                {
+                host: 'smtp.office365.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: 'tvildiani2001@outlook.com', // Your Outlook email address
+                    pass: '****', // Your Outlook email password
+                },
+            });
 
-    // Check if the requested file exists
-    fs.readFile(filePath, (err, content) => {
-        if (err) {
-            if (err.code === 'ENOENT') {
-                // If the file is not found, serve a 404 page
-                fs.readFile(path.join(__dirname, '404.html'), (error, content404) => {
-                    res.writeHead(404, { 'Content-Type': 'text/html' });
-                    res.end(content404, 'utf-8');
-                });
-            } else {
-                // If there is a server error, respond with 500
-                res.writeHead(500);
-                res.end(`Sorry, check with the site admin for error: ${err.code} ..\n`);
+            // Email options
+            const mailOptions = 
+            {
+                from: '"Chxikvia.tech" <tvildiani2001@outlook.com>',
+                to: 'tvildiani2001@gmail.com',
+                subject: `Message from ${name}`,
+                text: `You received a message from ${name} (${email}): ${message}`,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) 
+                {
+                    res.writeHead(500, { 'Content-Type': 'text/html' });
+                    res.end('An error occurred while sending the email.');
+                    return console.log('Error:', error);
+                }
+
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end('Message sent successfully!');
+                console.log('Message sent:', info.messageId);
+            });
+        });
+
+    } 
+    else 
+    {
+        let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
+        const extname = String(path.extname(filePath)).toLowerCase();
+        const contentType = mimeTypes[extname] || 'application/octet-stream';
+
+        fs.readFile(filePath, (err, content) => 
+            {
+            if (err) 
+                {
+                if (err.code === 'ENOENT') 
+                {
+                    fs.readFile(path.join(__dirname, '404.html'), (error, content404) => 
+                    {
+                        res.writeHead(404, { 'Content-Type': 'text/html' });
+                        res.end(content404, 'utf-8');
+                    });
+                } 
+                else 
+                {
+                    res.writeHead(500);
+                    res.end(`Sorry, check with the site admin for error: ${err.code} ..\n`);
+                }
+            } 
+            else 
+            {
+                res.writeHead(200, { 'Content-Type': contentType });
+                res.end(content, 'utf-8');
             }
-        } else {
-            // If the file is found, serve it with the correct content type
-            res.writeHead(200, { 'Content-Type': contentType });
-            res.end(content, 'utf-8');
-        }
-    });
+        });
+    }
 });
 
 // Start the server on port 8080
