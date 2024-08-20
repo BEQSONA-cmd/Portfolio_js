@@ -2,6 +2,7 @@
 @import url("fontawesome-all.min.css");
 
 
+
 .large-image {
     position: absolute;
     top: 0;
@@ -24,6 +25,7 @@
     align-items: center;
 	letter-spacing: 3px;
     text-shadow: 0 0 5px rgba(76, 175, 80, 0.8), 0 0 10px rgba(76, 175, 80, 0.6);
+	margin-left: auto;
 }
 
 #star-button .fa-star {
@@ -32,16 +34,19 @@
     text-shadow: 0 0 5px rgba(76, 175, 80, 0.8), 0 0 10px rgba(76, 175, 80, 0.6);
 }
 
-#star-section p {
-    color: #4CAF50;
-    margin: 0;
-    text-shadow: 0 0 5px rgba(76, 175, 80, 0.8), 0 0 10px rgba(76, 175, 80, 0.6);
+#nav ul {
+	display: flex;
+	align-items: center;
+
 }
 
-#star-section {
-    position: absolute;
-    top: 0px;
-    right: 10px;
+#nav li {
+	margin-right: 0px;
+}
+
+#nav {
+	display: flex;
+	justify-content: space-between;
 }
 
 @media (max-width: 768px) {
