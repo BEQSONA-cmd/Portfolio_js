@@ -76,7 +76,7 @@ const server = http.createServer((req, res) => {
                 secure: false,
                 auth: {
                     user: 'tvildiani2001@outlook.com',
-                    pass: 'Beqita24@',
+                    pass: '****',
                 },
             });
 
