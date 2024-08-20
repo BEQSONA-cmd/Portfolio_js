@@ -12,6 +12,38 @@
     object-position: center;
 }
 
+#star-button {
+    background-color: transparent;
+    color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+	letter-spacing: 3px;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.8), 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+#star-button .fa-star {
+    margin-right: 5px;
+    color: #4CAF50;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.8), 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+#star-section p {
+    color: #4CAF50;
+    margin: 0;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.8), 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+#star-section {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+
 @media (max-width: 768px) {
 	.column {
 		width: 100%;
