@@ -22,7 +22,6 @@ const mimeTypes = {
 
 const STAR_COUNT_FILE = 'star_count.json';
 
-// Function to read the current star count
 function getStarCount(callback) {
     fs.readFile(STAR_COUNT_FILE, 'utf8', (err, data) => {
         if (err) {
@@ -37,7 +36,6 @@ function getStarCount(callback) {
     });
 }
 
-// Function to update the star count
 function updateStarCount(callback) {
     getStarCount(currentCount => {
         const newCount = currentCount + 1;
@@ -61,6 +59,45 @@ const server = http.createServer((req, res) => {
         getStarCount(count => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ starCount: count }));
+        });
+    } else if (req.method === 'POST' && req.url === '/send') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        req.on('end', () => {
+            const parsedBody = querystring.parse(body);
+            const { name, email, message } = parsedBody;
+
+            let transporter = nodemailer.createTransport({
+                host: 'smtp.office365.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: 'tvildiani2001@outlook.com',
+                    pass: 'Beqita24@',
+                },
+            });
+
+            const mailOptions = {
+                from: '"Chxikvia.tech" <tvildiani2001@outlook.com>',
+                to: 'tvildiani2001@gmail.com',
+                subject: `Message from ${name}`,
+                text: `You received a message from ${name} (${email}): ${message}`,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    res.writeHead(500, { 'Content-Type': 'text/html' });
+                    res.end('An error occurred while sending the email.');
+                    return console.log('Error:', error);
+                }
+
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end('Message sent successfully!');
+                console.log('Message sent:', info.messageId);
+            });
         });
     } else {
         let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);

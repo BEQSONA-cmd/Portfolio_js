@@ -4,8 +4,7 @@
         $body = $('body'),
         $nav = $('#nav');
 
-    // Variable to control star-given check (1 = enabled, 0 = disabled)
-    var checkStarGiven = 0;
+    var checkStarGiven = 1;
 
     breakpoints({
         xlarge:  [ '1281px',  '1680px' ],
@@ -25,11 +24,8 @@
         offset: function() { return $nav.height(); }
     });
 
-    // Star button click event
     $('#star-button').on('click', function(event) {
         event.preventDefault();
-
-        // Check if the user has already given a star if checkStarGiven is enabled
         if (checkStarGiven === 1 && localStorage.getItem('hasGivenStar')) {
             alert('You have already given a star.');
             return;
@@ -40,19 +36,17 @@
 
             if (checkStarGiven === 1) {
                 localStorage.setItem('hasGivenStar', 'true');
-                $('#star-button').attr('disabled', 'disabled').css('color', '#FFD700'); // Gold color for given star
+                $('#star-button').attr('disabled', 'disabled').css('color', '#FFD700');
             }
         }).fail(function() {
             alert('Error: Unable to give a star at this moment.');
         });
     });
 
-    // Initial setup based on whether the checkStarGiven is enabled
     if (checkStarGiven === 1 && localStorage.getItem('hasGivenStar')) {
-        $('#star-button').attr('disabled', 'disabled').css('color', '#FFD700'); // Gold color for given star
+        $('#star-button').attr('disabled', 'disabled').css('color', '#FFD700');
     }
 
-    // Fetch the initial star count
     $.get('/star-count', function(data) {
         $('#star-count').text(data.starCount);
     });
