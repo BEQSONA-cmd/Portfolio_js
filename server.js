@@ -100,7 +100,7 @@ const server = http.createServer((req, res) => {
             });
         });
     } else {
-        let filePath = path.join(__dirname, 'public/index.html');
+        let filePath = path.join(__dirname, 'public', req.url === '/' ? 'index.html' : req.url);
         const extname = String(path.extname(filePath)).toLowerCase();
         const contentType = mimeTypes[extname] || 'application/octet-stream';
 
@@ -124,6 +124,6 @@ const server = http.createServer((req, res) => {
 });
 
 // Start the server on port 8080
-server.listen(80, () => {
+server.listen(8080, () => {
     console.log('Server running at http://localhost:8080');
 });
