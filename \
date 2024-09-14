@@ -76,7 +76,7 @@ const server = http.createServer((req, res) => {
                 secure: false,
                 auth: {
                     user: 'tvildiani2001@outlook.com',
-                    pass: '******',
+                    pass: 'Beqita24@',
                 },
             });
 
@@ -100,10 +100,10 @@ const server = http.createServer((req, res) => {
             });
         });
     } else {
-        let filePath = path.join(__dirname, 'public/index.html');
+        let filePath = path.join(__dirname, 'public');
         const extname = String(path.extname(filePath)).toLowerCase();
         const contentType = mimeTypes[extname] || 'application/octet-stream';
-
+	console.log(filePath);
         fs.readFile(filePath, (err, content) => {
             if (err) {
                 if (err.code === 'ENOENT') {
